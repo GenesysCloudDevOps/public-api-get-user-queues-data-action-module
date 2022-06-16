@@ -1,0 +1,67 @@
+{
+  "name": "Get User Queues",
+  "integrationType": "purecloud-data-actions",
+  "actionType": "custom",
+  "config": {
+    "request": {
+      "requestUrlTemplate": "/api/v2/users/${input.userId}/queues?pageSize=100&pageNumber=${input.pageNumber}",
+      "requestType": "GET",
+      "headers": {},
+      "requestTemplate": "${input.rawRequest}"
+    },
+    "response": {
+      "translationMap": {
+        "ids": "$.entities..id",
+        "pageCount": "$.pageCount",
+        "names": "$.entities..name"
+      },
+      "translationMapDefaults": {
+        "ids": "[]",
+        "pageCount": "0",
+        "names": "[]"
+      },
+      "successTemplate": "{ \"queueIds\": ${ids}, \"queueNames\": ${names}, \"pageCount\": ${pageCount} }"
+    }
+  },
+  "contract": {
+    "input": {
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "pageNumber": {
+            "default": "1",
+            "type": "integer"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "output": {
+      "successSchema": {
+        "type": "object",
+        "properties": {
+          "queueIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "queueNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pageCount": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "secure": false
+}
